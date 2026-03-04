@@ -68,7 +68,7 @@ export default function Settings() {
   }
 
   const handleCheckUpdates = () => {
-    setNotice({ type: 'info', text: 'Update channel not wired yet (v1.0).' })
+    setNotice({ type: 'info', text: 'Update channel not wired yet (v2.0).' })
   }
 
   const handleExportConfig = async () => {
