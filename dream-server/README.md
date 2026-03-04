@@ -356,6 +356,30 @@ dream mode status                        # Show current mode
 - [SECURITY.md](SECURITY.md) — Security best practices
 - [CHANGELOG.md](CHANGELOG.md) — Version history
 
+## Acknowledgments
+
+Dream Server exists because of the incredible people, projects, and communities that make open-source AI possible. We are grateful to every contributor, maintainer, and tinkerer whose work powers this stack.
+
+Thanks to [kyuz0](https://github.com/kyuz0) for [amd-strix-halo-toolboxes](https://github.com/kyuz0/amd-strix-halo-toolboxes) — pre-built ROCm containers for Strix Halo that saved us from having to build our own. And to [lhl](https://github.com/lhl) for [strix-halo-testing](https://github.com/lhl/strix-halo-testing) — the foundational Strix Halo AI research and rocWMMA performance work that the broader community builds on.
+
+### Projects that make Dream Server possible
+
+*   [llama.cpp (ggerganov)](https://github.com/ggml-org/llama.cpp) — LLM inference engine
+*   [Open WebUI](https://github.com/open-webui/open-webui) — Chat interface
+*   [AMD Strix Halo Toolboxes (kyuz0)](https://github.com/kyuz0/amd-strix-halo-toolboxes) — Pre-built ROCm containers for AMD inference
+*   [Strix Halo Testing (lhl)](https://github.com/lhl/strix-halo-testing) — Foundational Strix Halo AI research and rocWMMA optimizations
+*   [ComfyUI](https://github.com/comfyanonymous/ComfyUI) — Image generation engine
+*   [n8n](https://github.com/n8n-io/n8n) — Workflow automation
+*   [Qdrant](https://github.com/qdrant/qdrant) — Vector database
+*   [SearXNG](https://github.com/searxng/searxng) — Privacy-respecting search
+*   [Perplexica](https://github.com/ItzCrazyKns/Perplexica) — AI-powered search
+*   [LiteLLM](https://github.com/BerriAI/litellm) — LLM API gateway
+*   [Kokoro FastAPI (remsky)](https://github.com/remsky/Kokoro-FastAPI) — Text-to-speech
+*   [Speaches](https://github.com/speaches-ai/speaches) — Speech-to-text
+*   [Strix Halo Home Lab](https://strixhalo-homelab.d7.wtf/) — Community knowledge base
+
+---
+
 ## License
 
 Apache 2.0 — Use it, modify it, sell it. Just don't blame us.
