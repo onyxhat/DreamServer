@@ -638,10 +638,12 @@ if ($DryRun) {
                 $ocConfigFile = Join-Path $script:OPENCODE_CONFIG_DIR "opencode.json"
                 if (-not (Test-Path $ocConfigFile)) {
                     $llamaPort = $(if ($gpuInfo.Backend -eq "amd") { "8080" } else { "11434" })
+                    # NOTE: llama-server exposes models by GGUF filename, not friendly name
+                    $ocModelId = $tierConfig.GgufFile
                     $ocConfig = @"
 {
   "`$schema": "https://opencode.ai/config.json",
-  "model": "llama-server/$($tierConfig.LlmModel)",
+  "model": "llama-server/$ocModelId",
   "provider": {
     "llama-server": {
       "npm": "@ai-sdk/openai-compatible",
@@ -651,7 +653,7 @@ if ($DryRun) {
         "apiKey": "no-key"
       },
       "models": {
-        "$($tierConfig.LlmModel)": {
+        "$ocModelId": {
           "name": "$($tierConfig.LlmModel)",
           "limit": {
             "context": $($tierConfig.MaxContext),
