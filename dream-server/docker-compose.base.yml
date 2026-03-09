@@ -197,3 +197,5 @@ services:
 networks:
   default:
     name: dream-network
+  dream-network:
+    name: dream-network

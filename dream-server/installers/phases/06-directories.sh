@@ -242,6 +242,7 @@ MODELS_EOF
     LITELLM_KEY=$(_env_get LITELLM_KEY "sk-dream-$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | xxd -p)")
     LIVEKIT_SECRET=$(_env_get LIVEKIT_API_SECRET "$(openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64)")
     DASHBOARD_API_KEY=$(_env_get DASHBOARD_API_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    DIFY_SECRET_KEY=$(_env_get DIFY_SECRET_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
     OPENCODE_SERVER_PASSWORD=$(_env_get OPENCODE_SERVER_PASSWORD "")
 
     # Preserve user-supplied cloud API keys
@@ -305,6 +306,7 @@ LIVEKIT_API_SECRET=${LIVEKIT_SECRET}
 OPENCLAW_TOKEN=${OPENCLAW_TOKEN:-$(openssl rand -hex 24 2>/dev/null || head -c 24 /dev/urandom | xxd -p)}
 OPENCODE_SERVER_PASSWORD=${OPENCODE_SERVER_PASSWORD}
 OPENCODE_PORT=3003
+DIFY_SECRET_KEY=${DIFY_SECRET_KEY}
 
 #=== Voice Settings ===
 WHISPER_MODEL=base

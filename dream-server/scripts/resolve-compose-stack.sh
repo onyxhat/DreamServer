@@ -120,11 +120,12 @@ if ext_dir.exists():
             service = manifest.get("service", {})
             # Check GPU backend compatibility
             backends = service.get("gpu_backends", ["amd", "nvidia"])
-            if gpu_backend not in backends and "all" not in backends:
+            # "none" means CPU-only — compatible with any GPU backend
+            if gpu_backend not in backends and "all" not in backends and "none" not in backends:
                 continue
             # Get compose file from manifest
             compose_rel = service.get("compose_file", "")
-            if compose_rel:
+            if compose_rel and not compose_rel.endswith(".disabled"):
                 compose_path = service_dir / compose_rel
                 if compose_path.exists():
                     resolved.append(str(compose_path.relative_to(script_dir)))
