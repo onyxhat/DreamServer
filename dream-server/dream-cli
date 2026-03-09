@@ -118,11 +118,20 @@ cmd_status() {
 
     echo ""
 
-    # Registry-driven health checks
+    # Registry-driven health checks (parallel)
     echo -e "${BLUE}━━━ Health Checks ━━━${NC}"
 
     load_env
 
+    # Create temp directory for health check results
+    local tmpdir
+    tmpdir=$(mktemp -d)
+    trap "rm -rf '$tmpdir'" RETURN
+
+    # Array to track background job PIDs
+    local -a pids=()
+
+    # Launch parallel health checks
     for sid in "${SERVICE_IDS[@]}"; do
         local health="${SERVICE_HEALTH[$sid]}"
         local port_env="${SERVICE_PORT_ENVS[$sid]}"
@@ -146,11 +155,36 @@ cmd_status() {
             fi
         fi
 
-        local url="http://localhost:${port}${health}"
-        if curl -sf "$url" > /dev/null 2>&1; then
-            success "$name: healthy"
-        else
-            warn "$name: not responding"
+        # Launch health check in background
+        (
+            url="http://localhost:${port}${health}"
+            if curl -sf --max-time 5 "$url" > /dev/null 2>&1; then
+                echo "healthy|$name" > "$tmpdir/$sid"
+            else
+                echo "unhealthy|$name" > "$tmpdir/$sid"
+            fi
+        ) &
+        pids+=($!)
+    done
+
+    # Wait for all health checks to complete
+    for pid in "${pids[@]}"; do
+        wait "$pid" 2>/dev/null || true
+    done
+
+    # Display results in SERVICE_IDS order
+    for sid in "${SERVICE_IDS[@]}"; do
+        if [[ -f "$tmpdir/$sid" ]]; then
+            local result
+            result=$(cat "$tmpdir/$sid")
+            local status="${result%%|*}"
+            local name="${result#*|}"
+
+            if [[ "$status" == "healthy" ]]; then
+                success "$name: healthy"
+            else
+                warn "$name: not responding"
+            fi
         fi
     done
 
