@@ -298,6 +298,20 @@ cmd_update() {
     if [[ -x "${INSTALL_DIR}/scripts/resolve-compose-stack.sh" ]]; then
         compose_flags=$(bash "${INSTALL_DIR}/scripts/resolve-compose-stack.sh" --script-dir "$INSTALL_DIR" 2>/dev/null | tail -1)
     fi
+    # Validate that every -f target exists before using compose_flags
+    if [[ -n "${compose_flags:-}" ]]; then
+        local all_exist=true
+        for flag_file in $(echo "$compose_flags" | grep -oP '(?<=-f )\S+'); do
+            if [[ ! -f "${INSTALL_DIR}/${flag_file}" ]]; then
+                log_warn "Compose file not found: ${flag_file} — falling back to docker-compose.yml"
+                all_exist=false
+                break
+            fi
+        done
+        if [[ "$all_exist" != "true" ]]; then
+            compose_flags=""
+        fi
+    fi
     if [[ -n "${compose_flags:-}" ]]; then
         cd "$INSTALL_DIR"
         docker compose $compose_flags down --remove-orphans 2>/dev/null || docker-compose $compose_flags down --remove-orphans

@@ -84,15 +84,24 @@ list_backups() {
     for backup in "${backups[@]}"; do
         local id
         id=$(basename "$backup")
-        local manifest="$backup/manifest.json"
         local backup_type="unknown"
         local description=""
         local size
         size=$(du -sh "$backup" 2>/dev/null | cut -f1)
 
-        if [[ -f "$manifest" ]]; then
-            backup_type=$(grep -o '"backup_type": "[^"]*"' "$manifest" 2>/dev/null | cut -d'"' -f4 || echo "unknown")
-            description=$(grep -o '"description": "[^"]*"' "$manifest" 2>/dev/null | cut -d'"' -f4 || echo "")
+        if [[ "$backup" == *.tar.gz ]]; then
+            # Compressed archive — extract manifest from inside the tar
+            local manifest_data
+            local archive_name="${id%.tar.gz}"
+            if manifest_data=$(tar xzf "$backup" -O "${archive_name}/manifest.json" 2>/dev/null); then
+                backup_type=$(echo "$manifest_data" | grep -o '"backup_type": "[^"]*"' 2>/dev/null | cut -d'"' -f4 || echo "compressed")
+                description=$(echo "$manifest_data" | grep -o '"description": "[^"]*"' 2>/dev/null | cut -d'"' -f4 || echo "")
+            else
+                backup_type="compressed"
+            fi
+        elif [[ -f "$backup/manifest.json" ]]; then
+            backup_type=$(grep -o '"backup_type": "[^"]*"' "$backup/manifest.json" 2>/dev/null | cut -d'"' -f4 || echo "unknown")
+            description=$(grep -o '"description": "[^"]*"' "$backup/manifest.json" 2>/dev/null | cut -d'"' -f4 || echo "")
         fi
 
         printf "%-20s %-12s %-10s %s\n" "$id" "$backup_type" "$size" "$description"
