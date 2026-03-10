@@ -47,7 +47,7 @@ async def get_version():
     return result
 
 
-@router.get("/api/releases/manifest")
+@router.get("/api/releases/manifest", dependencies=[Depends(verify_api_key)])
 async def get_release_manifest():
     """Get release manifest with version history."""
     import urllib.request
