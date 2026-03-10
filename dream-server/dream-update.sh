@@ -301,7 +301,7 @@ cmd_update() {
     # Validate that every -f target exists before using compose_flags
     if [[ -n "${compose_flags:-}" ]]; then
         local all_exist=true
-        for flag_file in $(echo "$compose_flags" | grep -oP '(?<=-f )\S+'); do
+        for flag_file in $(echo "$compose_flags" | grep -o -- '-f [^ ]*' | cut -d' ' -f2); do
             if [[ ! -f "${INSTALL_DIR}/${flag_file}" ]]; then
                 log_warn "Compose file not found: ${flag_file} — falling back to docker-compose.yml"
                 all_exist=false

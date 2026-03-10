@@ -30,22 +30,32 @@ async def get_agent_metrics_html(api_key: str = Depends(verify_api_key)):
     last_update = agent.get("last_update", "")
     last_update_time = last_update.split("T")[1][:8] if "T" in last_update else "N/A"
 
+    # Escape all interpolated values for HTML safety
+    esc = lambda v: html_mod.escape(str(v))
+    active_gpus = esc(cluster.get("active_gpus", 0))
+    total_gpus = esc(cluster.get("total_gpus", 0))
+    failover_safe = esc(failover_text)
+    sessions = esc(agent.get("session_count", 0))
+    last_update_safe = esc(last_update_time)
+    tp_current = esc(f"{tp.get('current', 0):.1f}")
+    tp_average = esc(f"{tp.get('average', 0):.1f}")
+
     html = f"""
     <div class="grid">
         <article class="metric-card">
             <div class="metric-label">Cluster Status</div>
-            <div class="metric-value {cluster_class}">{cluster.get("active_gpus", 0)}/{cluster.get("total_gpus", 0)} GPUs</div>
-            <p style="margin: 0; font-size: 0.875rem;">Failover: {failover_text}</p>
+            <div class="metric-value {cluster_class}">{active_gpus}/{total_gpus} GPUs</div>
+            <p style="margin: 0; font-size: 0.875rem;">Failover: {failover_safe}</p>
         </article>
         <article class="metric-card">
             <div class="metric-label">Active Sessions</div>
-            <div class="metric-value">{agent.get("session_count", 0)}</div>
-            <p style="margin: 0; font-size: 0.875rem;">Updated: {last_update_time}</p>
+            <div class="metric-value">{sessions}</div>
+            <p style="margin: 0; font-size: 0.875rem;">Updated: {last_update_safe}</p>
         </article>
         <article class="metric-card">
             <div class="metric-label">Throughput</div>
-            <div class="metric-value">{tp.get("current", 0):.1f}</div>
-            <p style="margin: 0; font-size: 0.875rem;">tokens/sec (avg: {tp.get("average", 0):.1f})</p>
+            <div class="metric-value">{tp_current}</div>
+            <p style="margin: 0; font-size: 0.875rem;">tokens/sec (avg: {tp_average})</p>
         </article>
     </div>
     """

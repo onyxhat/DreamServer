@@ -236,9 +236,9 @@ const ModelManager = {
                 <div class="model-name">${escapeHtml(model.name)}</div>
                 <div class="model-meta">
                     <span class="vram-indicator ${model.min_vram_gb <= 24 ? 'vram-sufficient' : 'vram-insufficient'}">
-                        ${model.min_vram_gb}GB VRAM
+                        ${Number(model.min_vram_gb) || 0}GB VRAM
                     </span>
-                    <span>${model.size_gb}GB disk</span>
+                    <span>${Number(model.size_gb) || 0}GB disk</span>
                     <span>${escapeHtml(model.quantization || 'FP16')}</span>
                 </div>
                 <div class="model-description">${escapeHtml(model.description || '')}</div>
@@ -263,7 +263,7 @@ const ModelManager = {
             <div class="model-list-item ${model.status === 'active' ? 'active' : ''}" data-model-id="${escapeHtml(model.id)}">
                 <div>
                     <strong>${escapeHtml(model.id)}</strong>
-                    <span class="model-meta">${model.size_gb}GB • ${escapeHtml(model.status)}</span>
+                    <span class="model-meta">${Number(model.size_gb) || 0}GB • ${escapeHtml(model.status)}</span>
                 </div>
                 <div class="model-actions">
                     <button class="model-btn switch" data-model-id="${escapeHtml(model.id)}" onclick="ModelManager.switchModel(this.dataset.modelId)">
@@ -279,7 +279,7 @@ const ModelManager = {
     
     async downloadModel(modelId) {
         try {
-            const btn = document.querySelector(`[data-model-id="${modelId}"] .download`);
+            const btn = document.querySelector(`[data-model-id="${CSS.escape(modelId)}"] .download`);
             btn.textContent = 'Downloading...';
             btn.disabled = true;
             

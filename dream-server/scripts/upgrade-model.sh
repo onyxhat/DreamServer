@@ -17,6 +17,9 @@
 
 set -euo pipefail
 
+# Prerequisites
+command -v jq >/dev/null 2>&1 || { echo "Error: jq is required but not installed." >&2; exit 1; }
+
 # Configuration
 DREAM_DIR="${DREAM_DIR:-$HOME/dream-server}"
 MODELS_DIR="${MODELS_DIR:-$DREAM_DIR/models}"
@@ -140,16 +143,14 @@ save_state() {
     # Backup current state
     [[ -f "$STATE_FILE" ]] && cp "$STATE_FILE" "$BACKUP_FILE"
     
-    cat > "$STATE_FILE" << EOF
-{
-    "current": "$current",
-    "previous": "$previous",
-    "updatedAt": "$(date -u '+%Y-%m-%dT%H:%M:%SZ')",
-    "history": [
-        {"model": "$current", "activatedAt": "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"}
-    ]
-}
-EOF
+    jq -n         --arg cur "$current"         --arg prev "$previous"         --arg ts "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"         '{
+            current: $cur,
+            previous: $prev,
+            updatedAt: $ts,
+            history: [
+                {model: $cur, activatedAt: $ts}
+            ]
+        }' > "$STATE_FILE"
 }
 
 #-----------------------------------------------------------------------------

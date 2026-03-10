@@ -375,20 +375,20 @@ cmd_benchmark() {
 
     log "Running quick benchmark..."
 
-    local start=$(date +%s%N)
+    local start=$(date +%s)
     local response=$(cmd_chat "Say exactly: Hello World" 2>/dev/null)
-    local end=$(date +%s%N)
+    local end=$(date +%s)
 
-    local duration=$(( (end - start) / 1000000 ))
+    local duration=$(( end - start ))
 
     echo ""
     echo -e "${BLUE}━━━ Benchmark Results ━━━${NC}"
-    echo "  Response time: ${duration}ms"
+    echo "  Response time: ${duration}s"
     echo "  Response: $response"
 
-    if [[ $duration -lt 2000 ]]; then
+    if [[ $duration -lt 2 ]]; then
         success "Performance: Excellent (<2s)"
-    elif [[ $duration -lt 5000 ]]; then
+    elif [[ $duration -lt 5 ]]; then
         success "Performance: Good (<5s)"
     else
         warn "Performance: Slow (>5s) - check GPU/model"

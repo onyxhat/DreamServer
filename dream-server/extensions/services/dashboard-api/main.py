@@ -144,7 +144,7 @@ async def preflight_gpu():
     return {"available": False, "error": "No GPU detected. Ensure NVIDIA drivers or AMD amdgpu driver is loaded."}
 
 
-@app.get("/api/preflight/required-ports")
+@app.get("/api/preflight/required-ports", dependencies=[Depends(verify_api_key)])
 async def preflight_required_ports():
     """Return the list of service ports for preflight checking (no auth required)."""
     ports = []
