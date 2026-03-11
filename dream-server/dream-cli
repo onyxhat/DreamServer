@@ -836,14 +836,16 @@ META
                     local val1="${env1[$key]}"
                     local val2="${env2[$key]}"
 
-                    # Mask sensitive values
-                    if [[ "$key" =~ (PASSWORD|SECRET|KEY|TOKEN|API) ]]; then
-                        [[ -n "$val1" ]] && val1="***"
-                        [[ -n "$val2" ]] && val2="***"
-                    fi
-
+                    # Check if values differ BEFORE masking
                     if [[ "$val1" != "$val2" ]]; then
                         has_diff=true
+
+                        # Mask sensitive values for display
+                        if [[ "$key" =~ (PASSWORD|SECRET|KEY|TOKEN|API) ]]; then
+                            [[ -n "$val1" ]] && val1="***"
+                            [[ -n "$val2" ]] && val2="***"
+                        fi
+
                         if [[ -z "$val1" ]]; then
                             echo -e "  ${GREEN}+${NC} $key=$val2"
                         elif [[ -z "$val2" ]]; then
