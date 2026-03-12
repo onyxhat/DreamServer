@@ -194,6 +194,34 @@ grep -A 2 "Qwen3-8B" installers/lib/tier-map.sh | grep GGUF_SHA256
 
 **Note:** Some models (like Qwen3-14B and qwen3-coder-next) don't have checksums yet. The installer will skip verification for these but still download them successfully.
 
+### Network Timeout Hardening
+
+All network operations (downloads, health checks, API calls) include timeout protection to prevent indefinite hangs:
+
+**Timeout values:**
+- **Health checks**: 10 seconds — quick fail for unavailable services
+- **Script downloads**: 300 seconds (5 min) — Docker, NVIDIA repos, NodeSource, OpenCode installers
+- **Repository metadata**: 60 seconds (1 min) — package repository lists and GPG keys
+- **Model downloads**: 300-600 seconds — GGUF models (with resume support), FLUX models
+- **Embeddings downloads**: 600 seconds (10 min) — larger embedding models
+
+**Why this matters:**
+- Prevents installer hangs on slow/unresponsive networks
+- Provides predictable failure modes instead of indefinite blocking
+- Closes potential DoS vector from malicious or misconfigured remote servers
+- Improves user experience with clear timeout errors
+
+**Implementation:**
+```bash
+# curl with timeout
+curl -fsSL --max-time 300 https://get.docker.com -o script.sh
+
+# wget with timeout
+wget -c -q --timeout=300 -O model.gguf https://example.com/model.gguf
+```
+
+All timeout values are tuned for typical network conditions while allowing for slower connections.
+
 ---
 
 ## API Security
