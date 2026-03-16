@@ -80,7 +80,7 @@ else
             _dl_success=false
             for _attempt in 1 2 3; do
                 [[ $_attempt -gt 1 ]] && ai "Retry attempt $_attempt of 3..."
-                wget -c -q -O "$GGUF_DIR/$GGUF_FILE.part" "$GGUF_URL" \
+                wget -c -q --timeout=300 -O "$GGUF_DIR/$GGUF_FILE.part" "$GGUF_URL" \
                     >> "$INSTALL_DIR/logs/model-download.log" 2>&1 &
                 dl_pid=$!
 
@@ -168,7 +168,7 @@ else
                     # Diffusion model (~24GB)
                     if [[ ! -f "$FLUX_DIFFUSION_DIR/flux1-schnell.safetensors" ]]; then
                         echo "[FLUX] Downloading flux1-schnell.safetensors (~24GB)..."
-                        wget -c -q --show-progress -O "$FLUX_DIFFUSION_DIR/flux1-schnell.safetensors.part" \
+                        wget -c -q --show-progress --timeout=600 -O "$FLUX_DIFFUSION_DIR/flux1-schnell.safetensors.part" \
                             "https://huggingface.co/Comfy-Org/flux1-schnell/resolve/main/flux1-schnell.safetensors" 2>&1 && \
                             mv "$FLUX_DIFFUSION_DIR/flux1-schnell.safetensors.part" "$FLUX_DIFFUSION_DIR/flux1-schnell.safetensors" && \
                             echo "[FLUX] flux1-schnell.safetensors complete" || \
@@ -178,7 +178,7 @@ else
                     # CLIP-L text encoder (~246MB)
                     if [[ ! -f "$FLUX_ENCODER_DIR/clip_l.safetensors" ]]; then
                         echo "[FLUX] Downloading clip_l.safetensors (~246MB)..."
-                        wget -c -q --show-progress -O "$FLUX_ENCODER_DIR/clip_l.safetensors.part" \
+                        wget -c -q --show-progress --timeout=600 -O "$FLUX_ENCODER_DIR/clip_l.safetensors.part" \
                             "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors" 2>&1 && \
                             mv "$FLUX_ENCODER_DIR/clip_l.safetensors.part" "$FLUX_ENCODER_DIR/clip_l.safetensors" && \
                             echo "[FLUX] clip_l.safetensors complete" || \
@@ -188,7 +188,7 @@ else
                     # T5-XXL text encoder (~10GB)
                     if [[ ! -f "$FLUX_ENCODER_DIR/t5xxl_fp16.safetensors" ]]; then
                         echo "[FLUX] Downloading t5xxl_fp16.safetensors (~10GB)..."
-                        wget -c -q --show-progress -O "$FLUX_ENCODER_DIR/t5xxl_fp16.safetensors.part" \
+                        wget -c -q --show-progress --timeout=600 -O "$FLUX_ENCODER_DIR/t5xxl_fp16.safetensors.part" \
                             "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors" 2>&1 && \
                             mv "$FLUX_ENCODER_DIR/t5xxl_fp16.safetensors.part" "$FLUX_ENCODER_DIR/t5xxl_fp16.safetensors" && \
                             echo "[FLUX] t5xxl_fp16.safetensors complete" || \
@@ -198,7 +198,7 @@ else
                     # VAE (~335MB)
                     if [[ ! -f "$FLUX_VAE_DIR/ae.safetensors" ]]; then
                         echo "[FLUX] Downloading ae.safetensors (~335MB)..."
-                        wget -c -q --show-progress -O "$FLUX_VAE_DIR/ae.safetensors.part" \
+                        wget -c -q --show-progress --timeout=600 -O "$FLUX_VAE_DIR/ae.safetensors.part" \
                             "https://huggingface.co/Comfy-Org/Lumina_Image_2.0_Repackaged/resolve/main/split_files/vae/ae.safetensors" 2>&1 && \
                             mv "$FLUX_VAE_DIR/ae.safetensors.part" "$FLUX_VAE_DIR/ae.safetensors" && \
                             echo "[FLUX] ae.safetensors complete" || \
