@@ -225,8 +225,8 @@ sr_cache_stats() {
     echo "Cache Hits: $_SR_CACHE_HITS"
     echo "Cache Misses: $_SR_CACHE_MISSES"
     if [[ $_SR_CACHE_MISSES -gt 0 ]]; then
-        local total=$((SR_CACHE_HITS + _SR_CACHE_MISSES))
-        local hit_rate=$(((_SR_CACHE_HITS * 100) / total))
+        local total=$((_SR_CACHE_HITS + _SR_CACHE_MISSES))
+        local hit_rate=$((_SR_CACHE_HITS * 100 / total))
         echo "Hit Rate: ${hit_rate}%"
     fi
 }
